@@ -31,6 +31,34 @@ The following values were measured in the original report using one 774×620 inp
 | JPEG reconstruction | - | **39.46 dB / SSIM 0.9964** |
 | 10% coefficient loss recovery | Zero 22.01 dB | DC/AC hybrid **33.67 dB** |
 
+## Visual results
+
+All comparisons below are extracted from the original experiment report. Only the result regions are included; personal information and report metadata have been removed.
+
+### Demosaicing and processing order
+
+![Original image compared with Bilinear and VNG demosaicing](docs/assets/demosaicing-comparison.png)
+
+VNG improved reconstruction from 38.22 dB to 43.25 dB. Under channel-dependent Bayer noise, applying demosaicing before denoising preserved substantially more detail than reversing the order.
+
+![Demosaic-then-denoise compared with denoise-then-demosaic](docs/assets/noise-order-comparison.png)
+
+### Intensity-channel fusion
+
+![Clean VNG reconstruction compared with Y-channel intensity fusion](docs/assets/clean-intensity-fusion.png)
+
+Replacing the reconstructed luminance channel with an aligned intensity observation improved the clean result to 44.85 dB. The same strategy increased the noisy hybrid-sensing result from 21.73 dB to 27.50 dB.
+
+![Bayer-only reconstruction compared with hybrid Bayer and intensity sensing](docs/assets/noisy-hybrid-fusion.png)
+
+### JPEG-style transform experiments
+
+![Original grayscale image and JPEG-style DCT reconstruction](docs/assets/jpeg-reconstruction.png)
+
+The 8x8 DCT and quantization pipeline reconstructed the image at 39.46 dB with an SSIM of 0.9964. Coefficient-level perturbations show how different error models produce distinct spatial artifacts after inverse transformation.
+
+![Visual effects of additive, dropout, sign-flip, and shift coefficient corruption](docs/assets/coefficient-corruption.png)
+
 ### Reproducibility correction
 
 The original notebook reported baseline-level performance for cubic-spline recovery. Code review found that the assignment operated on a temporary array returned by `flatten()` and that the recovery array started from the uncorrupted coefficients. The refactored implementation starts from the corrupted coefficient array and writes through a reshaped view. The original spline result is therefore intentionally not presented as a valid project outcome and must be re-measured with this version.
@@ -99,7 +127,7 @@ The command writes:
 
 ## Privacy
 
-The public repository excludes the original course report because it contains personal identifiers. Only anonymized aggregate results and refactored source code are included.
+The public repository excludes the complete course report because it contains personal identifiers. It includes only anonymized result crops, aggregate metrics, and refactored source code.
 
 ## License
 
